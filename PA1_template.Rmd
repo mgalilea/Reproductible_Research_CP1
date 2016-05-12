@@ -1,0 +1,111 @@
+---
+title: "PA1 Template"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading and processing data
+
+1. Load the data (i.e. 𝚛𝚎𝚊𝚍.𝚌𝚜𝚟())
+2. Process/transform the data (if necessary) into a format suitable for your analysis
+
+```{r }
+d <- read.csv("./activity.csv",colClasses = c("numeric","Date","numeric"))
+```
+
+## What is mean total number of steps taken per day?
+
+1. Calculate the total number of steps taken per day
+
+```{r }
+dsum <- tapply(d$steps,d$date,sum,na.rm=TRUE)
+```
+
+2. Make a histogram of the total number of steps taken each day
+
+```{r }
+hist(dsum,col="red",xlab="Total Steps by Date",main="Histogram of Total Steps by Date")
+```
+
+3. Calculate and report the mean and median of the total number of steps taken per day
+
+```{r }
+mean(dsum)
+median(dsum)
+```
+
+## What is the average daily activity pattern?
+
+1. Make a time series plot (i.e. 𝚝𝚢𝚙𝚎 = "𝚕") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
+```{r }
+daverage <- tapply(d$steps,d$interval,mean,na.rm=TRUE)
+plot(names(daverage),daverage,type="l",xlab="5-minute interval",ylab="Average number of steps",main="Time Series Plot of 5-min Interval Average",col="blue")
+```
+
+2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+
+```{r }
+max_avg <- max(daverage)
+n_match <- match(max_avg,daverage)
+daverage[n_match]
+```
+
+## Imputing missing values
+
+1. Calculate and report the total number of missing values in the dataset
+
+```{r }
+sum(is.na(d))
+```
+
+2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+
+```{r }
+dincomplete <- d[is.na(d),]
+dcomplete <- d[complete.cases(d),]
+dincomplete$steps <- as.numeric(daverage)
+```
+
+3. Create a new dataset that is equal to the original dataset but with the missing data filled in
+
+```{r }
+d1 <- rbind(dincomplete,dcomplete)
+```
+
+4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+```{r }
+dsum1 <- tapply(d1$steps,d1$date,sum,na.rm=TRUE)
+hist(dsum1,col="blue",xlab="Total Steps by Date",main="Histogram of Total Steps by Date with no NA values")
+mean(dsum1)
+median(dsum1)
+```
+
+## Are there differences in activity patterns between weekdays and weekends?
+
+1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+
+```{r }
+weekenddays <- c("sábado","domingo")
+d1$weekday <- factor((weekdays(d1$date) %in% weekenddays),levels=c(TRUE,FALSE),labels=c("weekend","weekday"))
+d1weekdays <- d1$weekday == "weekday"
+d1weekend <- d1$weekday == "weekend"
+daverageweekday <- tapply(d1$steps[d1weekdays],as.factor(d1$interval[d1weekdays]),mean,na.rm=TRUE)
+daverageweekend <- tapply(d1$steps[d1weekend],as.factor(d1$interval[d1weekend]),mean,na.rm=TRUE)
+```
+
+2. Make a panel plot containing a time series plot (i.e. 𝚝𝚢𝚙𝚎 = "𝚕") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+
+
+```{r }
+par(mfcol = c(2, 1))
+plot(names(daverageweekday), daverageweekday, type = "l", xlab = "5 Min interval", ylab = "Average number of steps", main = "Average number of steps per interval Weekdays", 
+     ylim = range(0:250), xlim = range(0:2400))
+plot(names(daverageweekend), daverageweekend, type = "l", xlab = "5 Min interval", ylab = "Average number of steps", main = "Average number of steps per interval Weekend Days", 
+     ylim = range(0:250), xlim = range(0:2400))
+```
+
