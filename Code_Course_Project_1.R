@@ -21,8 +21,8 @@ weekenddays <- c("sábado","domingo")
 d1$weekday <- factor((weekdays(d1$date) %in% weekenddays),levels=c(TRUE,FALSE),labels=c("weekend","weekday"))
 d1weekdays <- d1$weekday == "weekday"
 d1weekend <- d1$weekday == "weekend"
-daverageweekday <- tapply(d1$steps[d1weekdays,],as.factor(d1$interval[d1weekdays,]),mean,na.rm=TRUE)
-daverageweekend <- tapply(d1$steps[d1weekend,],as.factor(d1$interval[d1weekdays,]),mean,na.rm=TRUE)
+daverageweekday <- tapply(d1$steps[d1weekdays],as.factor(d1$interval[d1weekdays]),mean,na.rm=TRUE)
+daverageweekend <- tapply(d1$steps[d1weekend],as.factor(d1$interval[d1weekend]),mean,na.rm=TRUE)
 par(mfcol = c(2, 1))
 plot(names(daverageweekday), daverageweekday, type = "l", xlab = "5 Min interval", ylab = "Average number of steps", main = "Average number of steps per interval Weekdays", 
      ylim = range(0:250), xlim = range(0:2400))
