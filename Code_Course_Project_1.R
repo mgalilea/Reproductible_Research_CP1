@@ -1,3 +1,4 @@
+# Code project version 2
 d <- read.csv("./activity.csv",colClasses = c("numeric","Date","numeric"))
 dsum <- tapply(d$steps,d$date,sum,na.rm=TRUE)
 hist(dsum,col="red",xlab="Total Steps by Date",main="Histogram of Total Steps by Date")

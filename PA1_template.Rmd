@@ -1,11 +1,7 @@
 ---
-title: "PA1 Template"
+title: "PA1 Template_ v2.0"
 output: html_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ## Loading and processing data
 
@@ -32,10 +28,17 @@ hist(dsum,col="red",xlab="Total Steps by Date",main="Histogram of Total Steps by
 
 3. Calculate and report the mean and median of the total number of steps taken per day
 
+3.1 Mean
+
 ```{r }
 mean(dsum)
+```
+3.2 Median
+
+```{r }
 median(dsum)
 ```
+
 
 ## What is the average daily activity pattern?
 
